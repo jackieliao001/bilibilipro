@@ -156,7 +156,59 @@ func (t *DailyTask) doForAccount(ctx context.Context, ck *model.Cookie, idx int)
 	// 6. 投币。
 	t.coinStep(ctx, ck, ar, level)
 
+	// 7. 可选子功能（开关在 daily 配置段，默认关闭）。
+	t.runOptionalSubTask(ctx, ck, ar, "银瓜子兑换", daily.Silver2Coin, func(subCfg *model.Config, client *bilibili.BiliClient, cookies []*model.Cookie, logger *slog.Logger) (task Task) {
+		return NewSilver2CoinTask(subCfg, client, cookies, logger)
+	}, func(cfg *model.Config) {
+		cfg.Tasks.Silver2Coin.Enabled = true
+	})
+	t.runOptionalSubTask(ctx, ck, ar, "漫画签到", daily.Manga, func(subCfg *model.Config, client *bilibili.BiliClient, cookies []*model.Cookie, logger *slog.Logger) (task Task) {
+		return NewMangaTask(subCfg, client, cookies, logger)
+	}, func(cfg *model.Config) {
+		cfg.Tasks.Manga.Enabled = true
+	})
+	t.runOptionalSubTask(ctx, ck, ar, "天选抽奖", daily.LiveLottery, func(subCfg *model.Config, client *bilibili.BiliClient, cookies []*model.Cookie, logger *slog.Logger) (task Task) {
+		return NewLiveLotteryTask(subCfg, client, cookies, logger)
+	}, func(cfg *model.Config) {
+		cfg.Tasks.LiveLottery.Enabled = true
+	})
+	t.runOptionalSubTask(ctx, ck, ar, "直播挂机", daily.LiveFansMedal, func(subCfg *model.Config, client *bilibili.BiliClient, cookies []*model.Cookie, logger *slog.Logger) (task Task) {
+		return NewLiveFansMedalTask(subCfg, client, cookies, logger)
+	}, func(cfg *model.Config) {
+		cfg.Tasks.LiveFansMedal.Enabled = true
+	})
+
 	return ar, nil
+}
+
+// runOptionalSubTask 执行每日任务中可选子功能：开关开启时构造子任务并执行，
+// 将子任务的步骤合并进当前账号结果；关闭时记录 skip 步骤。
+// enable 回调用于在 cfg 浅拷贝上强制打开子功能开关（每日任务开关独立于独立命令开关）。
+func (t *DailyTask) runOptionalSubTask(ctx context.Context, ck *model.Cookie, ar *model.AccountResult, name string, enabled bool, newTask func(subCfg *model.Config, client *bilibili.BiliClient, cookies []*model.Cookie, logger *slog.Logger) Task, enable func(cfg *model.Config)) {
+	if !enabled {
+		t.skipStep(ar, name, "未在每日任务中开启")
+		return
+	}
+	subCfg := *t.cfg
+	enable(&subCfg)
+	sub := newTask(&subCfg, t.client, []*model.Cookie{ck}, t.Logger) // 仅当前账号，避免子任务重复遍历全部账号
+	subAr, err := sub.Run(ctx)
+	if err != nil {
+		t.Logger.Warn(name+"执行异常", "err", err)
+		ar.Steps = append(ar.Steps, model.StepResult{Name: name, Status: "fail", Message: err.Error()})
+		return
+	}
+	if subAr == nil || len(subAr.Accounts) == 0 {
+		t.skipStep(ar, name, "无执行结果")
+		return
+	}
+	// 合并子任务该账号的步骤（子任务内部已做登录验证与异常隔离）
+	steps := subAr.Accounts[0].Steps
+	if len(steps) == 0 {
+		t.skipStep(ar, name, "无步骤记录")
+		return
+	}
+	ar.Steps = append(ar.Steps, steps...)
 }
 
 // coinStep 投币步骤：总开关 → Lv6 保留 → 今日已投检查 → 余额检查 → 逐个投币。

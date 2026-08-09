@@ -107,6 +107,10 @@ func mockDailyTransport(t *testing.T, counts *reqCounts, money float64) http.Rou
 		case "/x/relation/followings":
 			// 无关注列表（业务错误码），每日任务应回退到排行榜选视频。
 			return jsonResponse(`{"code":-400,"message":"mock 无关注列表","ttl":1,"data":null}`), nil
+		case "/xlive/revenue/v1/wallet/getStatus":
+			return jsonResponse(`{"code":0,"message":"0","data":{"silver_2_coin_left":100}}`), nil
+		case "/xlive/revenue/v1/wallet/silver2coin":
+			return jsonResponse(`{"code":0,"message":"0","data":null}`), nil
 		default:
 			t.Errorf("unexpected request path: %s", path)
 			return serverErrorResponse(), nil
@@ -323,5 +327,43 @@ func TestDailyFullFlow(t *testing.T) {
 	}
 	if n := counts.get("/x/web-interface/coin/today/exp"); n != 1 {
 		t.Fatalf("应查询今日已投 1 次, 实际 %d 次", n)
+	}
+}
+
+// TestDailySilver2CoinEnabled 验证 daily 配置中 silver2coin 开关开启时，
+// 每日任务会执行银瓜子兑换子功能（exchange 请求恰好 1 次）。
+func TestDailySilver2CoinEnabled(t *testing.T) {
+	counts := newReqCounts()
+	cfg := dailyTestConfig(func(d *model.DailyConfig) {
+		d.Silver2Coin = true
+	})
+	client := bilibili.New(cfg, slog.Default())
+	bilibili.SetTransportForTest(client, mockDailyTransport(t, counts, 100))
+
+	ck := &model.Cookie{DedeUserID: "100", SESSDATA: "s", BiliJCT: "jct", Buvid3: "b3"}
+	task := NewDailyTask(cfg, client, []*model.Cookie{ck}, slog.Default(), "")
+
+	result, err := task.Run(context.Background())
+	if err != nil {
+		t.Fatalf("Run error: %v", err)
+	}
+	if len(result.Accounts) != 1 {
+		t.Fatalf("accounts = %d, want 1", len(result.Accounts))
+	}
+	steps := result.Accounts[0].Steps
+	found := false
+	for _, s := range steps {
+		if s.Name == "银瓜子兑换硬币" {
+			found = true
+			if s.Status != "ok" {
+				t.Fatalf("银瓜子兑换 status = %s, want ok (msg=%s)", s.Status, s.Message)
+			}
+		}
+	}
+	if !found {
+		t.Fatalf("未找到银瓜子兑换步骤, steps=%+v", steps)
+	}
+	if n := counts.get("/xlive/revenue/v1/wallet/silver2coin"); n != 1 {
+		t.Fatalf("exchange 请求次数 = %d, want 1", n)
 	}
 }

@@ -65,6 +65,12 @@ tasks:
     support_up_ids: ""
     # 上报设备平台: android | ios | h5
     device_platform: android
+    # 以下为每日任务中可选执行的子功能开关（默认关闭，开启后随每日任务执行；
+    # 独立执行仍用下方对应任务段的 enabled）
+    silver2coin: false      # 银瓜子兑换硬币
+    manga: false            # 漫画签到+阅读
+    live_lottery: false     # 天选时刻抽奖
+    live_fans_medal: false  # 直播间挂机
 
   silver2coin:
     # 银瓜子兑换硬币（直播中心）

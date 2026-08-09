@@ -102,6 +102,12 @@ type DailyConfig struct {
 	SelectLike       bool   `yaml:"select_like"`
 	SupportUpIDs     string `yaml:"support_up_ids"`
 	DevicePlatform   string `yaml:"device_platform"`
+
+	// 以下为每日任务中可选执行的子功能开关（默认关闭，开启后随每日任务执行）
+	Silver2Coin   bool `yaml:"silver2coin"`
+	Manga         bool `yaml:"manga"`
+	LiveLottery   bool `yaml:"live_lottery"`
+	LiveFansMedal bool `yaml:"live_fans_medal"`
 }
 
 // WatchVideoEnabled 观看视频开关是否开启：nil 或 true → 开启；显式 false → 关闭。
