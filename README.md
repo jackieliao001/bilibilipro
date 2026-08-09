@@ -5,7 +5,9 @@ B 站自动化任务 CLI —— BiliBiliToolPro 的 Go 重写版。
 基于 [BiliBiliToolPro](https://github.com/RayWangQvQ/BiliBiliToolPro) 的功能设计，使用 Go 1.22 标准库 + `gopkg.in/yaml.v3` 实现，零第三方业务依赖，可离线编译，单二进制分发，支持 Docker 部署。
 ## 致谢
 
-本项目是 [RayWangQvQ/BiliBiliToolPro](https://github.com/RayWangQvQ/BiliBiliToolPro) 的 **Go 语言重写版**，参考了原项目的功能设计与 B 站 API 调用逻辑。感谢原作者 **RayWangQvQ** 的开源贡献（原项目 MIT License）。
+本项目是 [RayWangQvQ/BiliBiliToolPro](https://github.com/RayWangQvQ/BiliBiliToolPro) 的 **Go 语言重写版**，参考了原项目的功能设计与 B 站 API 调用逻辑。感谢原作者 **RayWangQvQ** 的开源贡献。
+
+本项目以 [MIT License](LICENSE) 发布（保留原项目版权声明，重写部分版权归本项目作者所有）。
 
 
 ## 功能
