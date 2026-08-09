@@ -298,14 +298,21 @@ func (t *LiveFansMedalTask) heartBeatRooms(ctx context.Context, ck *model.Cookie
 }
 
 // beatOnce 给单个直播间发送一个心跳包。
+// 节流等待与请求间隔等待均可被 ctx 取消（取消时直接返回，不发包）。
 func (t *LiveFansMedalTask) beatOnce(ctx context.Context, ck *model.Cookie, st *heartBeatState) {
 	// 节流：距上次心跳不足 beatInterval 则补齐剩余时间。
 	now := time.Now()
 	if wait := t.beatInterval - now.Sub(st.lastBeat); wait > 0 {
 		t.Logger.Debug("心跳节流休眠", "room", st.room.roomID, "ms", wait.Milliseconds())
-		time.Sleep(wait)
+		timer := time.NewTimer(wait)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return
+		case <-timer.C:
+		}
 	}
-	t.paceHeartBeat()
+	t.paceHeartBeat(ctx)
 
 	seq := st.count
 	uuid := newUUID()
@@ -337,10 +344,16 @@ func (t *LiveFansMedalTask) beatOnce(ctx context.Context, ck *model.Cookie, st *
 }
 
 // paceHeartBeat 心跳请求前的固定 1s 限流（原版 E/X 特殊路径；
-// 仅当配置了请求间隔时生效，与 C# 行为一致）。
-func (t *LiveFansMedalTask) paceHeartBeat() {
+// 仅当配置了请求间隔时生效，与 C# 行为一致）。ctx 取消时提前返回。
+func (t *LiveFansMedalTask) paceHeartBeat(ctx context.Context) {
 	if t.cfg.Bilibili.IntervalSeconds > 0 && t.reqPacing > 0 {
-		time.Sleep(t.reqPacing)
+		timer := time.NewTimer(t.reqPacing)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return
+		case <-timer.C:
+		}
 	}
 }
 

@@ -31,8 +31,10 @@ type SchedulerConfig struct {
 
 // LogConfig 日志配置。
 type LogConfig struct {
-	Level string `yaml:"level"` // debug|info|warn|error
-	File  string `yaml:"file"`  // 空 = 仅控制台
+	Level      string `yaml:"level"`       // debug|info|warn|error
+	File       string `yaml:"file"`        // 空 = 仅控制台
+	MaxSizeMB  int    `yaml:"max_size_mb"` // 日志文件轮转阈值（MB），0=默认10
+	MaxBackups int    `yaml:"max_backups"` // 保留备份份数，0=默认5
 }
 
 // BilibiliConfig B 站客户端配置。

@@ -11,6 +11,9 @@ log:
   level: info
   # 日志文件路径，为空表示仅输出到控制台
   file: logs/bilitoolgo.log
+  # 日志文件轮转：超过 max_size_mb 后归档（.1/.2/...），最多保留 max_backups 份，防止长期运行日志无限增长
+  max_size_mb: 10
+  max_backups: 5
 
 bilibili:
   # 请求限速：任意两个 API 请求之间的随机间隔秒数（限流防护）

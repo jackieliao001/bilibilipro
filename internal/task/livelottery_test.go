@@ -391,6 +391,34 @@ func TestLiveLotteryAreaFilter(t *testing.T) {
 	}
 }
 
+// TestLiveLotteryPaginationCap 分页上限：has_more 恒为 1 时每分区最多翻 5 页，不会无限翻页。
+func TestLiveLotteryPaginationCap(t *testing.T) {
+	cfg := lotteryTestConfig(func(lc *model.LiveLotteryConfig) {
+		lc.NumberOfDraw = 0 // 不限参与次数，避免提前退出，专门验证页数上限
+		lc.FollowGroupName = ""
+	})
+	counts := newReqCounts()
+	pages := map[string]string{}
+	for p := 1; p <= 5; p++ {
+		pages["1_"+strconv.Itoa(p)] = listBody("", 1, "") // 空列表 + has_more=1
+	}
+	mt := &lotteryTransport{
+		t:         t,
+		counts:    counts,
+		areasBody: `{"code":0,"message":"0","ttl":1,"data":{"data":[{"id":1,"name":"娱乐"}]}}`,
+		pages:     pages,
+	}
+	client := newLotteryClient(t, mt)
+
+	ar := runLottery(t, cfg, client).Accounts[0]
+	if n := counts.get("/xlive/web-interface/v1/second/getList"); n != 5 {
+		t.Fatalf("has_more 恒为 1 时每分区应最多请求 5 页, 实际 %d", n)
+	}
+	if s := findStep(&ar, "天选时刻抽奖"); s == nil || s.Status != "skip" {
+		t.Fatalf("空列表应 skip: %+v", ar.Steps)
+	}
+}
+
 // TestLiveLotteryAbortOnCookieInvalid nav=-101：登录失败中止该账号，后续零请求。
 func TestLiveLotteryAbortOnCookieInvalid(t *testing.T) {
 	cfg := lotteryTestConfig(nil)

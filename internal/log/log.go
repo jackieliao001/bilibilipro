@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/raywangqvq/bilitoolgo/internal/model"
@@ -25,14 +24,11 @@ func Init(cfg model.LogConfig) (*slog.Logger, error) {
 	handlers = append(handlers, slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: level}))
 
 	if cfg.File != "" {
-		if err := os.MkdirAll(filepath.Dir(cfg.File), 0o755); err != nil {
-			return nil, fmt.Errorf("create log dir: %w", err)
-		}
-		f, err := os.OpenFile(cfg.File, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
+		w, err := newRotatingWriter(cfg.File, cfg.MaxSizeMB, cfg.MaxBackups)
 		if err != nil {
-			return nil, fmt.Errorf("open log file %s: %w", cfg.File, err)
+			return nil, err
 		}
-		handlers = append(handlers, slog.NewJSONHandler(f, &slog.HandlerOptions{Level: level}))
+		handlers = append(handlers, slog.NewJSONHandler(w, &slog.HandlerOptions{Level: level}))
 	}
 
 	var h slog.Handler

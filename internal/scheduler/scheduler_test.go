@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"log/slog"
+	"runtime"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -90,14 +91,16 @@ func TestRandomSleepSeconds(t *testing.T) {
 }
 
 // TestSleepRandomCancel 验证 ctx 取消时 SleepRandom 提前返回 ctx.Err()。
-// 注意：enabled=true 时随机秒数可能恰为 0（立即返回 nil，不进入等待），
-// 因此用重试循环确保至少一次真正进入等待后再取消，避免偶发假失败。
+// 注意：SleepRandom 以真实时钟计算沉默窗口，23:00 之后剩余窗口为 0 秒，
+// 永远随机不到等待时长（测试会假失败）。因此这里改为调用可注入时钟的
+// sleepRandomAt（固定中午），确定性进入等待路径后再取消。
 func TestSleepRandomCancel(t *testing.T) {
-	for i := 0; i < 20; i++ {
+	noon := time.Date(2026, 8, 8, 12, 0, 0, 0, time.UTC)
+	for i := 0; i < 5; i++ {
 		ctx, cancel := context.WithCancel(context.Background())
 		done := make(chan error, 1)
 		go func() {
-			done <- SleepRandom(ctx, true, testLogger())
+			done <- sleepRandomAt(ctx, true, noon, testLogger())
 		}()
 
 		time.Sleep(50 * time.Millisecond)
@@ -105,18 +108,15 @@ func TestSleepRandomCancel(t *testing.T) {
 
 		select {
 		case err := <-done:
-			if errors.Is(err, context.Canceled) {
-				return // 成功验证：等待被取消并提前返回
-			}
-			if err != nil {
+			if !errors.Is(err, context.Canceled) {
 				t.Fatalf("取消后应返回 context.Canceled, got %v", err)
 			}
-			// err == nil：本次随机到 0 秒，未进入实际等待，重试
+			return // 成功验证：等待被取消并提前返回
 		case <-time.After(2 * time.Second):
 			t.Fatal("ctx 取消后 SleepRandom 未在 2 秒内返回")
 		}
 	}
-	t.Fatal("连续 20 次随机均为 0 秒，未进入实际等待，无法验证取消路径")
+	t.Fatal("固定中午仍多次未进入等待路径，逻辑异常")
 }
 
 // TestNextRunValid 验证合法表达式（5 段标准 + 6 段秒级）返回未来时间。
@@ -180,6 +180,50 @@ func TestRunTriggersJob(t *testing.T) {
 	if got := count.Load(); got < 1 {
 		t.Fatalf("job 应至少执行一次, got %d", got)
 	}
+}
+
+// TestRunLongLivedNoGoroutineLeak 长跑稳定性：cron 每秒触发、job 快速返回，
+// 跑 6 秒后 cancel，对比运行前后 goroutine 数量（允许 ±3 小波动），验证无泄漏。
+func TestRunLongLivedNoGoroutineLeak(t *testing.T) {
+	var count atomic.Int32
+	job := func(ctx context.Context) error {
+		count.Add(1)
+		return nil
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan error, 1)
+	go func() { done <- Run(ctx, "*/1 * * * * *", false, job, testLogger()) }()
+
+	// 预热：让 cron 内部 goroutine 启动完成后再测基线。
+	time.Sleep(1500 * time.Millisecond)
+	runtime.GC()
+	before := runtime.NumGoroutine()
+
+	time.Sleep(6 * time.Second)
+	cancel()
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatalf("Run 应返回 nil, got %v", err)
+		}
+	case <-time.After(10 * time.Second):
+		t.Fatal("ctx 取消后 Run 未退出")
+	}
+
+	runtime.GC()
+	time.Sleep(100 * time.Millisecond) // 让退出中的 goroutine 收尾
+	runtime.GC()
+	after := runtime.NumGoroutine()
+
+	runs := count.Load()
+	if runs < 5 {
+		t.Fatalf("6 秒内每秒触发应至少执行 5 次 job, got %d", runs)
+	}
+	if diff := after - before; diff > 3 {
+		t.Fatalf("Run 长跑后 goroutine 泄漏: 运行前 %d, 运行后 %d (差值 %d > 3)", before, after, diff)
+	}
+	t.Logf("goroutine 基线 %d → 结束 %d, job 执行 %d 次", before, after, runs)
 }
 
 // TestRunSkipOverlap 验证防重叠：job 阻塞 3 秒时，期间每秒触发均被跳过，

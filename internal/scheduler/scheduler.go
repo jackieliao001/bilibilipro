@@ -67,7 +67,13 @@ func Run(ctx context.Context, cronExpr string, randomSleepEnabled bool, job func
 // enabled=false 直接返回 nil；enabled=true 时随机沉默 [0, 到当日 23:00:00 的剩余秒数] 秒，
 // 即最晚不超过当日 23:00:00 开始执行（不会跨天）。ctx 取消时返回 ctx.Err()，调用方据此得知被中断。
 func SleepRandom(ctx context.Context, enabled bool, logger *slog.Logger) error {
-	secs := randomSleepSeconds(enabled, time.Now())
+	return sleepRandomAt(ctx, enabled, time.Now(), logger)
+}
+
+// sleepRandomAt 是 SleepRandom 的实现，now 可注入以便测试固定时间点
+// （避免测试依赖真实时钟：23:00 之后剩余窗口为 0，永远随机不到等待时长）。
+func sleepRandomAt(ctx context.Context, enabled bool, now time.Time, logger *slog.Logger) error {
+	secs := randomSleepSeconds(enabled, now)
 	if secs <= 0 {
 		// 未启用 / 随机到 0 秒 / 已过当日 23:00 截止时刻（理论边界）：直接返回不沉默
 		return nil

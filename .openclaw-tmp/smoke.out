@@ -1,0 +1,67 @@
+time=2026-08-09T23:42:38.846+08:00 level=INFO msg="加载 cookies 完成" count=0
+time=2026-08-09T23:42:38.857+08:00 level=INFO msg="调度已启动: 表达式 */5 * * * * *, 下次执行 2026-08-09 23:42:40, 随机沉默 未启用"
+time=2026-08-09T23:42:38.858+08:00 level=INFO msg=调度已启动 cron="*/5 * * * * *"
+time=2026-08-09T23:42:40.000+08:00 level=INFO msg=调度触发
+time=2026-08-09T23:42:40.000+08:00 level=INFO msg=开始执行任务 task=Daily
+## BiliTool 任务执行报告：Daily
+
+账号总数：0，成功：0，失败：0
+
+time=2026-08-09T23:42:40.001+08:00 level=ERROR msg=任务整体失败（没有账号执行成功） task=Daily total=0
+time=2026-08-09T23:42:40.002+08:00 level=WARN msg=单次任务执行未成功，等待下次调度 error="任务整体失败（没有账号执行成功）: Daily"
+time=2026-08-09T23:42:45.000+08:00 level=INFO msg=调度触发
+time=2026-08-09T23:42:45.005+08:00 level=INFO msg=开始执行任务 task=Daily
+## BiliTool 任务执行报告：Daily
+
+账号总数：0，成功：0，失败：0
+
+time=2026-08-09T23:42:45.006+08:00 level=ERROR msg=任务整体失败（没有账号执行成功） task=Daily total=0
+time=2026-08-09T23:42:45.006+08:00 level=WARN msg=单次任务执行未成功，等待下次调度 error="任务整体失败（没有账号执行成功）: Daily"
+time=2026-08-09T23:42:50.000+08:00 level=INFO msg=调度触发
+time=2026-08-09T23:42:50.000+08:00 level=INFO msg=开始执行任务 task=Daily
+## BiliTool 任务执行报告：Daily
+
+账号总数：0，成功：0，失败：0
+
+time=2026-08-09T23:42:50.001+08:00 level=ERROR msg=任务整体失败（没有账号执行成功） task=Daily total=0
+time=2026-08-09T23:42:50.001+08:00 level=WARN msg=单次任务执行未成功，等待下次调度 error="任务整体失败（没有账号执行成功）: Daily"
+time=2026-08-09T23:42:55.000+08:00 level=INFO msg=调度触发
+time=2026-08-09T23:42:55.004+08:00 level=INFO msg=开始执行任务 task=Daily
+## BiliTool 任务执行报告：Daily
+
+账号总数：0，成功：0，失败：0
+
+time=2026-08-09T23:42:55.004+08:00 level=ERROR msg=任务整体失败（没有账号执行成功） task=Daily total=0
+time=2026-08-09T23:42:55.005+08:00 level=WARN msg=单次任务执行未成功，等待下次调度 error="任务整体失败（没有账号执行成功）: Daily"
+time=2026-08-09T23:43:00.000+08:00 level=INFO msg=调度触发
+time=2026-08-09T23:43:00.001+08:00 level=INFO msg=开始执行任务 task=Daily
+## BiliTool 任务执行报告：Daily
+
+账号总数：0，成功：0，失败：0
+
+time=2026-08-09T23:43:00.001+08:00 level=ERROR msg=任务整体失败（没有账号执行成功） task=Daily total=0
+time=2026-08-09T23:43:00.001+08:00 level=WARN msg=单次任务执行未成功，等待下次调度 error="任务整体失败（没有账号执行成功）: Daily"
+time=2026-08-09T23:43:05.000+08:00 level=INFO msg=调度触发
+time=2026-08-09T23:43:05.005+08:00 level=INFO msg=开始执行任务 task=Daily
+## BiliTool 任务执行报告：Daily
+
+账号总数：0，成功：0，失败：0
+
+time=2026-08-09T23:43:05.005+08:00 level=ERROR msg=任务整体失败（没有账号执行成功） task=Daily total=0
+time=2026-08-09T23:43:05.005+08:00 level=WARN msg=单次任务执行未成功，等待下次调度 error="任务整体失败（没有账号执行成功）: Daily"
+time=2026-08-09T23:43:10.000+08:00 level=INFO msg=调度触发
+time=2026-08-09T23:43:10.000+08:00 level=INFO msg=开始执行任务 task=Daily
+## BiliTool 任务执行报告：Daily
+
+账号总数：0，成功：0，失败：0
+
+time=2026-08-09T23:43:10.001+08:00 level=ERROR msg=任务整体失败（没有账号执行成功） task=Daily total=0
+time=2026-08-09T23:43:10.001+08:00 level=WARN msg=单次任务执行未成功，等待下次调度 error="任务整体失败（没有账号执行成功）: Daily"
+time=2026-08-09T23:43:15.000+08:00 level=INFO msg=调度触发
+time=2026-08-09T23:43:15.005+08:00 level=INFO msg=开始执行任务 task=Daily
+## BiliTool 任务执行报告：Daily
+
+账号总数：0，成功：0，失败：0
+
+time=2026-08-09T23:43:15.006+08:00 level=ERROR msg=任务整体失败（没有账号执行成功） task=Daily total=0
+time=2026-08-09T23:43:15.006+08:00 level=WARN msg=单次任务执行未成功，等待下次调度 error="任务整体失败（没有账号执行成功）: Daily"

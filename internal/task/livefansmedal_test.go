@@ -2,6 +2,7 @@ package task
 
 import (
 	"context"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http"
@@ -9,7 +10,9 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
+	"time"
 
 	"github.com/raywangqvq/bilitoolgo/internal/api/bilibili"
 	"github.com/raywangqvq/bilitoolgo/internal/model"
@@ -362,6 +365,130 @@ func TestLiveFansMedalOfflineRoom(t *testing.T) {
 	}
 	if n := counts.get("/xlive/data-interface/v1/x25Kn/E"); n != 0 {
 		t.Fatalf("未开播不应心跳, 实际 %d", n)
+	}
+}
+
+// timedBeatTransport 记录心跳请求到达时间（节流窗口断言用）；其他路径一律 500。
+type timedBeatTransport struct {
+	mu    sync.Mutex
+	times []time.Time
+	body  string // 心跳响应体
+}
+
+func (t *timedBeatTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	if strings.Contains(r.URL.Path, "x25Kn") {
+		t.mu.Lock()
+		t.times = append(t.times, time.Now())
+		t.mu.Unlock()
+		return jsonResponse(t.body), nil
+	}
+	return serverErrorResponse(), nil
+}
+
+func (t *timedBeatTransport) count() int {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	return len(t.times)
+}
+
+// newHeartBeatLoopTask 构造只跑心跳循环的任务（跳过登录/粉丝牌等前置步骤）。
+func newHeartBeatLoopTask(cfg *model.Config, client *bilibili.BiliClient, ck *model.Cookie) *LiveFansMedalTask {
+	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	return NewLiveFansMedalTask(cfg, client, []*model.Cookie{ck}, logger).(*LiveFansMedalTask)
+}
+
+// singleMedalRoom 单个开播直播间（心跳循环直接使用的目标）。
+func singleMedalRoom() []medalRoom {
+	return []medalRoom{{
+		roomID:   1001,
+		roomInfo: &bilibili.RoomInfo{RoomID: 1001, AreaID: 2, ParentAreaID: 1, LiveStatus: 1, Uid: 2002},
+		medal:    bilibili.MedalWallItem{TargetName: "主播A"},
+	}}
+}
+
+// TestLiveFansMedalHeartBeatThrottleWindow 65s 节流窗口：窗口内不发出第 2 个心跳包；
+// 取消后循环快速退出。
+func TestLiveFansMedalHeartBeatThrottleWindow(t *testing.T) {
+	cfg := medalTestConfig(nil) // IntervalSeconds=0，paceHeartBeat 不生效
+	ck := medalTestCookieWithBuvid()
+	rt := &timedBeatTransport{body: heartBeatBody("skey", "0,2", 100)}
+	client := newMedalClient(t, rt)
+	tt := newHeartBeatLoopTask(cfg, client, ck)
+	tt.heartBeatNumber = 2 // 需 2 包才完成 → 第 2 包落在 65s 窗口内
+	tt.beatInterval = 65 * time.Second
+
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan error, 1)
+	go func() { done <- tt.heartBeatRooms(ctx, ck, singleMedalRoom()) }()
+
+	time.Sleep(3 * time.Second) // 首包立即发出后进入 65s 节流休眠
+	cancel()
+	select {
+	case err := <-done:
+		if !errors.Is(err, context.Canceled) {
+			t.Fatalf("取消后应返回 context.Canceled, got %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("ctx 取消后心跳循环未退出")
+	}
+	if n := rt.count(); n != 1 {
+		t.Fatalf("65s 节流窗口内应仅发送 1 个心跳包, 实际 %d", n)
+	}
+}
+
+// TestLiveFansMedalHeartBeatThrottleSpacing 相邻心跳间隔 >= beatInterval（2s 可观测窗口）。
+func TestLiveFansMedalHeartBeatThrottleSpacing(t *testing.T) {
+	cfg := medalTestConfig(nil)
+	ck := medalTestCookieWithBuvid()
+	rt := &timedBeatTransport{body: heartBeatBody("skey", "0,2", 100)}
+	client := newMedalClient(t, rt)
+	tt := newHeartBeatLoopTask(cfg, client, ck)
+	tt.heartBeatNumber = 2
+	tt.beatInterval = 2 * time.Second
+
+	if err := tt.heartBeatRooms(context.Background(), ck, singleMedalRoom()); err != nil {
+		t.Fatalf("heartBeatRooms 失败: %v", err)
+	}
+	if n := rt.count(); n != 2 {
+		t.Fatalf("heartBeatNumber=2 应恰好 2 个心跳包, 实际 %d", n)
+	}
+	gap := rt.times[1].Sub(rt.times[0])
+	if gap < 1700*time.Millisecond {
+		t.Fatalf("相邻心跳间隔应 >= 2s（节流窗口）, 实际 %v", gap)
+	}
+}
+
+// TestLiveFansMedalHeartBeatCancelDuringThrottleSleep 节流休眠中 ctx 取消：
+// 立即退出且不再发包（不阻塞 65s、不空转）。
+func TestLiveFansMedalHeartBeatCancelDuringThrottleSleep(t *testing.T) {
+	cfg := medalTestConfig(nil)
+	ck := medalTestCookieWithBuvid()
+	rt := &timedBeatTransport{body: heartBeatBody("skey", "0,2", 100)}
+	client := newMedalClient(t, rt)
+	tt := newHeartBeatLoopTask(cfg, client, ck)
+	tt.heartBeatNumber = 1_000_000 // 永不达标，循环只能靠 ctx 退出
+	tt.beatInterval = 5 * time.Second
+
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan error, 1)
+	go func() { done <- tt.heartBeatRooms(ctx, ck, singleMedalRoom()) }()
+
+	time.Sleep(300 * time.Millisecond) // 首包已发，正处于 5s 节流休眠
+	cancel()
+	start := time.Now()
+	select {
+	case err := <-done:
+		if !errors.Is(err, context.Canceled) {
+			t.Fatalf("取消后应返回 context.Canceled, got %v", err)
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("节流休眠中 ctx 取消后 3s 内未退出（节流休眠不可中断？）")
+	}
+	if d := time.Since(start); d > 2*time.Second {
+		t.Fatalf("取消后退出过慢: %v", d)
+	}
+	if n := rt.count(); n != 1 {
+		t.Fatalf("取消后不应再发送心跳包, 实际 %d", n)
 	}
 }
 
