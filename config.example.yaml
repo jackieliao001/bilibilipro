@@ -66,6 +66,35 @@ tasks:
     # 上报设备平台: android | ios | h5
     device_platform: android
 
+  silver2coin:
+    # 银瓜子兑换硬币（直播中心）
+    enabled: false
+  manga:
+    # 漫画签到+阅读
+    enabled: false
+    # 自定义漫画 id（<=0 跳过阅读）
+    custom_comic_id: 0
+  live_lottery:
+    # 天选时刻抽奖
+    enabled: false
+    # 抽奖次数（0=不限制）
+    number_of_draw: 0
+    # 分区 id（空=全部）
+    area_host_id: ""
+    # 奖品名包含/排除关键字
+    include_reward_name: ""
+    exclude_reward_name: ""
+    # 礼物价格下限
+    gift_price: 0
+    # 保留关注 UID 白名单
+    retain_uids: ""
+    # 抽奖关注分组名
+    follow_group_name: "天选时刻"
+  live_fans_medal:
+    # 直播间挂机（粉丝牌）
+    enabled: false
+    # 目标 UP uid（0=自动选择）
+    uid: 0
   unfollow:
     # 是否启用取关任务（清理"天选时刻"抽奖后关注的大量账号）
     enabled: true

@@ -26,10 +26,14 @@ import (
 )
 
 const (
-	cmdLogin    = "login"
-	cmdDaily    = "daily"
-	cmdUnfollow = "unfollow"
-	cmdTest     = "test"
+	cmdLogin         = "login"
+	cmdDaily         = "daily"
+	cmdUnfollow      = "unfollow"
+	cmdTest          = "test"
+	cmdSilver2Coin   = "silver2coin"
+	cmdManga         = "manga"
+	cmdLiveLottery   = "livelottery"
+	cmdLiveFansMedal = "livefansmedal"
 )
 
 func main() {
@@ -43,7 +47,7 @@ func run(args []string) int {
 	}
 	cmd := args[0]
 	switch cmd {
-	case cmdLogin, cmdDaily, cmdUnfollow, cmdTest:
+	case cmdLogin, cmdDaily, cmdUnfollow, cmdTest, cmdSilver2Coin, cmdManga, cmdLiveLottery, cmdLiveFansMedal:
 	default:
 		fmt.Fprintf(os.Stderr, "未知子命令: %s\n", cmd)
 		usage()
@@ -248,6 +252,14 @@ func runTaskOnce(ctx context.Context, cmd string, cfg *model.Config, client *bil
 		t = task.NewUnfollowTask(cfg, client, cookies, logger)
 	case cmdTest:
 		t = task.NewTestTask(client, cookies, logger)
+	case cmdSilver2Coin:
+		t = task.NewSilver2CoinTask(cfg, client, cookies, logger)
+	case cmdManga:
+		t = task.NewMangaTask(cfg, client, cookies, logger)
+	case cmdLiveLottery:
+		t = task.NewLiveLotteryTask(cfg, client, cookies, logger)
+	case cmdLiveFansMedal:
+		t = task.NewLiveFansMedalTask(cfg, client, cookies, logger)
 	}
 
 	logger.Info("开始执行任务", "task", t.Name())
@@ -342,6 +354,10 @@ func usage() {
 	fmt.Fprintln(os.Stderr, "  daily    每日任务（看视频/分享/投币等）")
 	fmt.Fprintln(os.Stderr, "  unfollow 取关指定分组用户")
 	fmt.Fprintln(os.Stderr, "  test     测试账号有效性")
+	fmt.Fprintln(os.Stderr, "  silver2coin 银瓜子兑换硬币")
+	fmt.Fprintln(os.Stderr, "  manga    漫画签到+阅读")
+	fmt.Fprintln(os.Stderr, "  livelottery 天选时刻抽奖")
+	fmt.Fprintln(os.Stderr, "  livefansmedal 直播间挂机")
 	fmt.Fprintln(os.Stderr, "  -cron <expr>          常驻调度模式：cron 表达式（6 段，含秒），如 \"0 30 8 * * *\"=每天 08:30:00；留空则读取 config.scheduler")
 	fmt.Fprintln(os.Stderr, "  -random-sleep          启用随机沉默：任务触发后随机沉默一段时间再执行（时长程序随机，最晚不超过当日 23:00:00 开始执行；默认取 config.security.random_sleep_enabled）")
 	fmt.Fprintln(os.Stderr, "环境变量: RAY_COOKIE_FILE（cookies 文件路径）、RAY_LOG_LEVEL、RAY_DINGTALK_WEBHOOK")

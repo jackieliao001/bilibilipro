@@ -50,8 +50,41 @@ type CookieConfig struct {
 
 // TasksConfig 任务配置。
 type TasksConfig struct {
-	Daily    DailyConfig    `yaml:"daily"`
-	Unfollow UnfollowConfig `yaml:"unfollow"`
+	Daily         DailyConfig         `yaml:"daily"`
+	Unfollow      UnfollowConfig      `yaml:"unfollow"`
+	Silver2Coin   Silver2CoinConfig   `yaml:"silver2coin"`
+	Manga         MangaConfig         `yaml:"manga"`
+	LiveLottery   LiveLotteryConfig   `yaml:"live_lottery"`
+	LiveFansMedal LiveFansMedalConfig `yaml:"live_fans_medal"`
+}
+
+// Silver2CoinConfig 银瓜子兑换硬币任务配置。
+type Silver2CoinConfig struct {
+	Enabled bool `yaml:"enabled"` // 默认 false
+}
+
+// MangaConfig 漫画签到+阅读任务配置。
+type MangaConfig struct {
+	Enabled       bool  `yaml:"enabled"`
+	CustomComicID int64 `yaml:"custom_comic_id"` // <=0 跳过阅读
+}
+
+// LiveLotteryConfig 天选时刻抽奖任务配置。
+type LiveLotteryConfig struct {
+	Enabled           bool   `yaml:"enabled"`
+	NumberOfDraw      int    `yaml:"number_of_draw"`      // 抽奖次数
+	AreaHostID        string `yaml:"area_host_id"`        // 分区 id（空=全部）
+	IncludeRewardName string `yaml:"include_reward_name"` // 奖品名包含关键字
+	ExcludeRewardName string `yaml:"exclude_reward_name"` // 奖品名排除关键字
+	GiftPrice         int    `yaml:"gift_price"`          // 礼物价格下限
+	RetainUids        string `yaml:"retain_uids"`         // 保留关注 UID 白名单
+	FollowGroupName   string `yaml:"follow_group_name"`   // 抽奖关注分组名
+}
+
+// LiveFansMedalConfig 直播间挂机任务配置。
+type LiveFansMedalConfig struct {
+	Enabled bool  `yaml:"enabled"`
+	Uid     int64 `yaml:"uid"` // 目标 UP uid，0=自动选择
 }
 
 // DailyConfig 每日任务配置。
