@@ -1,0 +1,128 @@
+# ============================================================
+# bilitoolgo 配置文件示例
+# 使用方式：复制本文件为 config/config.yaml（或运行目录下 config.yaml）
+#   Windows: copy config.example.yaml config.yaml
+#   Linux:   cp config.example.yaml config.yaml
+# 所有字段与 internal/model 包中的 Config 结构一一对应。
+# ============================================================
+
+log:
+  # 日志级别: debug | info | warn | error
+  level: info
+  # 日志文件路径，为空表示仅输出到控制台
+  file: logs/bilitoolgo.log
+
+bilibili:
+  # 请求限速：任意两个 API 请求之间的随机间隔秒数（限流防护）
+  # 建议 10-20 秒，实际等待 [interval/2, interval] 之间的随机值，
+  # 避免高频请求触发 B 站风控；0 表示不限制。
+  interval_seconds: 10
+  # 请求 B 站接口使用的 User-Agent（标准浏览器 UA）
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+  # HTTP 代理地址，留空表示直连；需要代理时填写，如 http://127.0.0.1:7890
+  proxy: ""
+
+security:
+  # 随机沉默开关：开启后任务触发时随机沉默一段时间再执行（防定时集中触发）
+  # 沉默时长由程序随机，最晚不超过当日 23:00:00 开始执行（为任务留足运行时间，不会跨天）
+  random_sleep_enabled: false
+
+scheduler:
+  # 是否常驻调度（服务器长期运行/定时执行必须设为 true，等价于运行命令时加 -cron 参数）
+  enabled: true
+  # cron 表达式（6 段，含秒），如 "0 30 8 * * *" = 每天 08:30:00
+  cron: "0 30 8 * * *"
+
+# 账号 Cookie 列表。
+# 注意：Cookie 属于敏感信息，建议把真实 Cookie 放在 cookies.json 中
+# （见 cookies.example.json），并确保 config.yaml 中该列表保持为空，
+# 且 cookies.json 已被 .gitignore 忽略，避免误提交泄露。
+cookies: []
+
+tasks:
+  daily:
+    # 是否启用每日任务
+    enabled: true
+    # 以下三个开关默认开启（未配置或 true 均视为开启）；
+    # 显式设为 false 时，每日任务执行到对应环节会跳过并继续下一步
+    # 是否观看视频（模拟播放 30 秒，获取观看经验）
+    watch_video: true
+    # 是否分享视频（每日首次分享得 5 经验）
+    share_video: true
+    # 是否投币（与 donate_coins 配合：开关开启且数量>0 才投）
+    donate_coin: true
+    # 每日投币数量（最多 5，每币得 10 经验）
+    donate_coins: 5
+    # 保留硬币数：当账号硬币余额低于该值时停止投币（0 表示不保留）
+    protect_coins: 0
+    # 等级达到 6 级后是否保留硬币（不再投币）
+    save_coins_when_lv6: false
+    # 是否将硬币投给专栏文章（否则投给视频）
+    donate_for_article: false
+    select_like: false
+    # 优先支持的 UP 主 UID 列表，多个用英文逗号分隔，如 "2,1024"
+    # 留空则从排行榜/关注列表自动选择
+    support_up_ids: ""
+    # 上报设备平台: android | ios | h5
+    device_platform: android
+
+  unfollow:
+    # 是否启用取关任务（清理"天选时刻"抽奖后关注的大量账号）
+    enabled: true
+    # 取关的分组名称
+    group_name: "天选时刻"
+    # 取关数量，0 表示该分组内全部取关
+    count: 20
+    # 保留不取关的 UID 列表，多个用英文逗号分隔，如 "2,1024"
+    retain_uids: ""
+
+push:
+  dingtalk:
+    # 是否启用钉钉机器人推送（任务完成后推送结果摘要）
+    enabled: false
+    # 钉钉自定义机器人 Webhook 地址
+    webhook_url: ""
+    # 机器人加签密钥（安全设置 → 加签 中生成，留空表示未加签）
+    secret: ""
+
+  serverchan:
+    # 是否启用 Server酱（Turbo 版）推送（https://sct.ftqq.com）
+    enabled: false
+    # Turbo 版 SendKey（必填，平台生成的 ScKey；旧版 scKey 已废弃）
+    send_key: ""
+  pushplus:
+    # 是否启用 PushPlus 推送（http://www.pushplus.plus）
+    enabled: false
+    # 平台令牌（必填）
+    token: ""
+    # 推送渠道: wechat | webhook | cp | sms | mail，留空默认 wechat
+    channel: ""
+    # 群组编码（群发用，channel 为 webhook 时无效）
+    topic: ""
+    # webhook 编码（不是地址），仅 channel=webhook/cp 时填写
+    webhook: ""
+  workweixin:
+    # 是否启用企业微信群机器人推送（https://work.weixin.qq.com/api/doc/90000/90136/91770）
+    enabled: false
+    # 群机器人 Webhook 完整地址（必填）
+    webhook_url: ""
+  telegram:
+    # 是否启用 Telegram Bot 推送（https://core.telegram.org/bots/api）
+    enabled: false
+    # Bot 令牌（必填，BotFather 获取）
+    bot_token: ""
+    # 接收会话 ID（必填）
+    chat_id: ""
+    # 代理（可选），格式 user:password@host:port（未带 scheme 时按 http 处理）
+    proxy: ""
+    # API 地址（可选），默认 https://api.telegram.org，可替换为自建反代 host
+    api_host: ""
+  custom_api:
+    # 是否启用自定义 API 推送（把消息按模板 POST 到任意接口）
+    enabled: false
+    # 目标 API 地址（必填）
+    url: ""
+    # 占位符（可选），默认 "#msg#"，将被消息内容的 JSON 字符串替换（模板中不加引号包裹）
+    placeholder: "#msg#"
+    # POST 请求体 JSON 模板（可选），占位符替换后作为请求体发送
+    body_json_template: '{"msgtype":"markdown","markdown":{"content":#msg#}}'

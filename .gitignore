@@ -1,0 +1,32 @@
+# 构建产物
+/build/
+/bilipro
+/bilipro.exe
+
+# 日志
+/logs/
+*.log
+
+# 配置（保留示例文件，忽略真实配置与 Cookie）
+config.yaml
+cookies.json
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+# Docker 镜像导出产物
+bilipro-*.tar
+bilipro-*.tar.gz
+bilipro-multistage.tar
+
+# 工作台与临时文件
+.openclaw/
+.cluster/
+*.tmp
+
+# 编辑器/IDE 附加
+*.swp
+*.swo
+.vs/

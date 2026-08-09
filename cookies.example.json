@@ -1,0 +1,8 @@
+{
+  "cookies": [
+    {
+      "name": "示例账号",
+      "cookie_str": "SESSDATA=xxx; bili_jct=xxx; DedeUserID=xxx"
+    }
+  ]
+}
