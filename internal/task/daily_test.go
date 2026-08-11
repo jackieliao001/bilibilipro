@@ -10,8 +10,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api/bilibili"
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/api/bilibili"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // roundTripFunc 将函数适配为 http.RoundTripper，用于 mock 任意 URL 的响应

@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // TestHeartbeatSkipCidZero 回归测试：arc/search 来源视频 cid=0 时，

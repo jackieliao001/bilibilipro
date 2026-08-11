@@ -1,4 +1,4 @@
-module github.com/raywangqvq/bilitoolgo
+module github.com/jackieliao001/bilibilipro
 
 go 1.22
 

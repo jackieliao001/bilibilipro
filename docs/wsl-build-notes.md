@@ -1,4 +1,4 @@
-# bilipro 多阶段构建说明（WSL / 服务器通用）
+# bilibilipro 多阶段构建说明（WSL / 服务器通用）
 
 > 更新日期：2026-08-08
 > 方案说明：本项目 Docker 镜像采用**多阶段构建**（方案 A，标准方式），不再维护"预编译二进制注入"方案（相关文件已清理）。
@@ -16,14 +16,14 @@ Dockerfile（多阶段）
 
 ```bash
 # 默认（alpine:3.21 运行层）
-docker build -t bilipro:latest .
+docker build -t bilibilipro:latest .
 
 # 生产/安全优先（distroless，无 shell 非 root，独立变体）
-docker build -f Dockerfile.distroless -t bilipro:distroless .
+docker build -f Dockerfile.distroless -t bilibilipro:distroless .
 
 # 切换运行基镜像（ARG BASE_IMAGE，需配套 APP_UID）
 docker build --build-arg BASE_IMAGE=gcr.io/distroless/static-debian12:nonroot \
-             --build-arg APP_UID=65532 -t bilipro:latest .
+             --build-arg APP_UID=65532 -t bilibilipro:latest .
 ```
 
 或使用 compose（默认走 Dockerfile）：
@@ -36,8 +36,8 @@ docker compose build
 
 | 产物 | 说明 |
 |------|------|
-| `bilipro:latest` / `bilipro:multistage` | 多阶段构建版（15.3MB，alpine:3.21 + 静态二进制） |
-| `bilipro-multistage.tar` | 镜像导出文件，`docker load -i` 即用 |
+| `bilibilipro:latest` / `bilibilipro:multistage` | 多阶段构建版（15.3MB，alpine:3.21 + 静态二进制） |
+| `bilibilipro-multistage.tar` | 镜像导出文件，`docker load -i` 即用 |
 
 ## 三、构建前置条件
 
@@ -74,10 +74,10 @@ docker-ce 官方仓库版、或安装 Docker Desktop。
 ## 六、部署（服务器）
 
 ```bash
-docker load -i bilipro-multistage.tar
+docker load -i bilibilipro-multistage.tar
 mkdir -p config logs && cp config.example.yaml config/config.yaml
 # 修改 config.yaml：scheduler.enabled: true + scheduler.cron（每日执行时间）
-docker run --rm -v ./config:/app/config -v ./logs:/app/logs bilipro:latest login
+docker run --rm -v ./config:/app/config -v ./logs:/app/logs bilibilipro:latest login
 docker compose up -d        # 常驻定时运行
 docker compose logs -f
 ```

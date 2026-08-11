@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // followingsData 关注列表接口响应 data 结构。

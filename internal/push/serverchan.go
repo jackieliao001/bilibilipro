@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // serverChanSendURL Server酱 Turbo 发送接口（包级变量，测试可覆盖）。

@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api/bilibili"
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/api/bilibili"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // DailyTask 每日任务：观看视频、分享视频、投币。
@@ -70,7 +70,7 @@ func (t *DailyTask) doForAccount(ctx context.Context, ck *model.Cookie, idx int)
 		switch {
 		case info != nil && info.Code != 0:
 			if info.Code == -101 {
-				msg = fmt.Sprintf("登录校验失败: Cookie 已失效或未登录（code=-101），请运行 bilipro login 重新扫码登录")
+				msg = fmt.Sprintf("登录校验失败: Cookie 已失效或未登录（code=-101），请运行 bilibilipro login 重新扫码登录")
 			} else {
 				msg = fmt.Sprintf("登录校验失败: code=%d %s", info.Code, info.Message)
 			}

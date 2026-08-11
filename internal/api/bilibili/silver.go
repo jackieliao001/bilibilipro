@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // silverOrigin 直播钱包接口的 Origin/Referer（原版 LiveDomainService 同款）。

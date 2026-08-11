@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // defaultTelegramAPIHost Telegram 官方 Bot API 地址。

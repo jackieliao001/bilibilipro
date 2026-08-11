@@ -3,7 +3,7 @@ package bilibili
 import (
 	"context"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // GetDailyTaskRewardInfo 获取每日任务奖励状态（登录/观看/投币/分享）。

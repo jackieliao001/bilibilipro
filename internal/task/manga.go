@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api/bilibili"
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/api/bilibili"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // defaultMangaEpID 漫画阅读默认章节 ep_id（原版 MangaTaskConfig.CustomEpId 默认值；
@@ -56,7 +56,7 @@ func (t *MangaTask) doForAccount(ctx context.Context, ck *model.Cookie, idx int)
 		switch {
 		case info != nil && info.Code != 0:
 			if info.Code == -101 {
-				msg = "登录校验失败: Cookie 已失效或未登录（code=-101），请运行 bilipro login 重新扫码登录"
+				msg = "登录校验失败: Cookie 已失效或未登录（code=-101），请运行 bilibilipro login 重新扫码登录"
 			} else {
 				msg = fmt.Sprintf("登录校验失败: code=%d %s", info.Code, info.Message)
 			}

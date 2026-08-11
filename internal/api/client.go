@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 const (

@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api"
+	"github.com/jackieliao001/bilibilipro/internal/api"
 )
 
 // QRCodeData 扫码登录二维码信息。

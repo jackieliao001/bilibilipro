@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // TestRealArchiveCoins 真实网络回归测试（临时，验证后删除）。
@@ -17,7 +17,7 @@ func TestRealArchiveCoins(t *testing.T) {
 	if os.Getenv("REAL_TEST") != "1" {
 		t.Skip("set REAL_TEST=1 to run real network test")
 	}
-	cookies, err := model.ParseCookiesFromFile("D:/WorkSpace/GitSpace/BiliBiliToolPro/bilipro/build/cookies.json")
+	cookies, err := model.ParseCookiesFromFile("D:/WorkSpace/GitSpace/BiliBiliToolPro/bilibilipro/build/cookies.json")
 	if err != nil || len(cookies) == 0 {
 		t.Fatalf("load cookies failed: %v", err)
 	}

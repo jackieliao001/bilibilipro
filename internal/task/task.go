@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // cookieFilePath 返回 Cookie 文件保存路径：优先环境变量 RAY_COOKIE_FILE，

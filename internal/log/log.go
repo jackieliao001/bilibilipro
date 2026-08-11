@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // Init 按配置初始化 logger：控制台 text 输出 + （可选）文件 JSON 输出。

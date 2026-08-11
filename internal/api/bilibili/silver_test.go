@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // visitIDRegex visit_id 格式：first(1-9) + 10 位小写字母数字 + last(0)。

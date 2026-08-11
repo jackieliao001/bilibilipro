@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // rankingData 排行榜接口响应 data 结构。

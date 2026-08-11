@@ -14,8 +14,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api/bilibili"
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/api/bilibili"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // medalTestConfig 构造直播间挂机测试配置。

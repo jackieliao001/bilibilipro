@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api/bilibili"
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/api/bilibili"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // mangaTestConfig 构造漫画任务测试配置。

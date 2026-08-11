@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api"
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/api"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // GetHomePage 访问 B 站首页，返回 Set-Cookie 响应头列表（用于补全 buvid3 等设备 Cookie）。

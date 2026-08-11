@@ -1,11 +1,11 @@
-# bilipro 升级规划：原版剩余功能清单（待确认）
+# bilibilipro 升级规划：原版剩余功能清单（待确认）
 
 > 状态：**待用户确认** | 日期：2026-08-09
 > 基线：v0.1.0-base（已推送 GitHub，仅基础功能）
 
 ## 一、现状对照
 
-| 项 | 原版 12 任务 | Go 版（bilipro） |
+| 项 | 原版 12 任务 | Go 版（bilibilipro） |
 |----|-------------|------------------|
 | 已有 | Login / Daily / UnfollowBatched / Test | ✅ 已实现（含 cron 调度、随机沉默、6 渠道推送等增强） |
 | 剩余 | Manga / MangaPrivilege / VipPrivilege / VipBigPoint / Silver2Coin / Charge / LiveFansMedal / LiveLottery | ⏳ 待确认后分批开发 |

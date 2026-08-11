@@ -3,7 +3,7 @@ package bilibili
 import (
 	"context"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // GetUserInfo 获取当前登录用户信息（nav 接口，响应中含 WBI 签名 keys）。

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // 自定义 API 渠道默认占位符与默认请求体模板（与原 C# 项目 OtherApi 一致）。

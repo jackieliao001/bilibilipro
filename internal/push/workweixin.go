@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // WorkWeixinChannel 企业微信群机器人推送渠道。

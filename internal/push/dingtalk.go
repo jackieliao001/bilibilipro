@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // DingTalkChannel 钉钉机器人推送渠道（支持加签）。

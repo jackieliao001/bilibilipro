@@ -10,8 +10,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api"
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/api"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 const (

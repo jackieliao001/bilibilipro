@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api"
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/api"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // mangaOrigin 漫画站接口的 Origin/Referer。

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // getCoinData account.bilibili.com/site/getCoin 接口响应 data 结构。

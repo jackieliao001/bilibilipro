@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api/bilibili"
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/api/bilibili"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // LoginTask 扫码登录任务：生成二维码 → 轮询扫码结果 → 补全 buvid3 → 合并保存 Cookie。

@@ -1,16 +1,16 @@
-# bilipro Docker 长期运行部署文档（compose 常驻 cron 模式）
+# bilibilipro Docker 长期运行部署文档（compose 常驻 cron 模式）
 
-本文档描述如何在服务器上用 Docker Compose 将 bilipro 部署为**常驻定时模式**：
+本文档描述如何在服务器上用 Docker Compose 将 bilibilipro 部署为**常驻定时模式**：
 容器以 `restart: unless-stopped` 长期运行，启动后进入常驻调度模式，内置 cron 调度器按 `config/config.yaml` 的 `scheduler` 段（`enabled: true` + `cron` 表达式）**每日定时**执行每日任务；配置文件与 Cookie、日志通过**双卷挂载**持久化在宿主机，容器重建不丢失。
 
 > 部署目标结构：
 >
 > ```
-> bilipro/
+> bilibilipro/
 > ├── docker-compose.yml   # 常驻 cron 模式编排
 > ├── Dockerfile           # 多阶段构建（基础镜像可切换）
 > ├── config/              # 挂载卷 1：config.yaml + cookies.json（持久化）
-> └── logs/                # 挂载卷 2：bilitoolgo.log（结构化日志）
+> └── logs/                # 挂载卷 2：bilibilipro.log（结构化日志）
 > ```
 
 ---
@@ -32,11 +32,11 @@ docker compose version
 
 ## 2. 上传 / 克隆项目
 
-将本项目（`bilipro/` 目录）上传到服务器，或直接克隆：
+将本项目（`bilibilipro/` 目录）上传到服务器，或直接克隆：
 
 ```bash
-git clone <项目仓库地址> bilipro
-cd bilipro
+git clone <项目仓库地址> bilibilipro
+cd bilibilipro
 ```
 
 后续所有命令均在该目录（含 `docker-compose.yml` 的目录）下执行。
@@ -66,7 +66,7 @@ cp config.example.yaml config/config.yaml
 docker compose build
 ```
 
-构建产物标记为 `bilipro:latest`（`docker-compose.yml` 中 `image: bilipro:latest`）。默认基础镜像为 `alpine:3.21`，如需切换 distroless/scratch 等，参见 `Dockerfile` 顶部注释。
+构建产物标记为 `bilibilipro:latest`（`docker-compose.yml` 中 `image: bilibilipro:latest`）。默认基础镜像为 `alpine:3.21`，如需切换 distroless/scratch 等，参见 `Dockerfile` 顶部注释。
 
 > 镜像只需构建一次；之后更新代码重新 build 即可（见第 9 节）。
 
@@ -153,10 +153,10 @@ docker compose logs -f
 docker compose logs --tail=100
 
 # 宿主机侧：结构化日志同时落盘到挂载目录
-tail -f logs/bilitoolgo.log
+tail -f logs/bilibilipro.log
 ```
 
-日志文件 `logs/bilitoolgo.log`（JSON 结构化格式）持久化在宿主机 `./logs/` 目录，容器删除/重建不丢失，便于后续接入 logrotate 等宿主机日志轮转工具。
+日志文件 `logs/bilibilipro.log`（JSON 结构化格式）持久化在宿主机 `./logs/` 目录，容器删除/重建不丢失，便于后续接入 logrotate 等宿主机日志轮转工具。
 
 ---
 

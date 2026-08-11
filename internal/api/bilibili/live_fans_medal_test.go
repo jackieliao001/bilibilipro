@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // liveBuvidTestCookie 含 LIVE_BUVID 的测试 Cookie。

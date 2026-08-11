@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // wbiMixinKeyTab B 站 WBI 签名混淆表（固定 64 位映射）。

@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // 天选时刻角标 Pendent_id（504=天选时刻，426=百人成就，397=新星主播）。

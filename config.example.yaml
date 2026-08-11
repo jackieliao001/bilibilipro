@@ -1,5 +1,5 @@
 # ============================================================
-# bilitoolgo 配置文件示例
+# bilibilipro 配置文件示例
 # 使用方式：复制本文件为 config/config.yaml（或运行目录下 config.yaml）
 #   Windows: copy config.example.yaml config.yaml
 #   Linux:   cp config.example.yaml config.yaml
@@ -10,7 +10,7 @@ log:
   # 日志级别: debug | info | warn | error
   level: info
   # 日志文件路径，为空表示仅输出到控制台
-  file: logs/bilitoolgo.log
+  file: logs/bilibilipro.log
   # 日志文件轮转：超过 max_size_mb 后归档（.1/.2/...），最多保留 max_backups 份，防止长期运行日志无限增长
   max_size_mb: 10
   max_backups: 5

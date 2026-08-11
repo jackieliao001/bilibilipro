@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 // TestGetFollowingsByTagBareArray 回归测试：/x/relation/tag 的 data 是裸数组。

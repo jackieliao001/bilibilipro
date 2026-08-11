@@ -1,6 +1,6 @@
 // BiliBiliToolPro Go 重写版入口。
 //
-// 用法: bilipro <login|daily|unfollow|test> [-config path] [-cookies path] [-accounts 1,2] [-debug] [-cron expr] [-random-sleep]
+// 用法: bilibilipro <login|daily|unfollow|test> [-config path] [-cookies path] [-accounts 1,2] [-debug] [-cron expr] [-random-sleep]
 package main
 
 import (
@@ -17,12 +17,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/raywangqvq/bilitoolgo/internal/api/bilibili"
-	"github.com/raywangqvq/bilitoolgo/internal/log"
-	"github.com/raywangqvq/bilitoolgo/internal/model"
-	"github.com/raywangqvq/bilitoolgo/internal/push"
-	"github.com/raywangqvq/bilitoolgo/internal/scheduler"
-	"github.com/raywangqvq/bilitoolgo/internal/task"
+	"github.com/jackieliao001/bilibilipro/internal/api/bilibili"
+	"github.com/jackieliao001/bilibilipro/internal/log"
+	"github.com/jackieliao001/bilibilipro/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/push"
+	"github.com/jackieliao001/bilibilipro/internal/scheduler"
+	"github.com/jackieliao001/bilibilipro/internal/task"
 )
 
 const (
@@ -55,7 +55,7 @@ func run(args []string) int {
 	}
 
 	// 子命令后的 flag 解析
-	fs := flag.NewFlagSet("bilipro "+cmd, flag.ContinueOnError)
+	fs := flag.NewFlagSet("bilibilipro "+cmd, flag.ContinueOnError)
 	fs.Usage = usage
 
 	defaultConfigPath := os.Getenv("CONFIG_PATH")
@@ -349,7 +349,7 @@ func parseAccounts(s string) ([]int, error) {
 }
 
 func usage() {
-	fmt.Fprintln(os.Stderr, "用法: bilipro <login|daily|unfollow|test> [-config path] [-cookies path] [-accounts 1,2] [-debug] [-cron expr] [-random-sleep]")
+	fmt.Fprintln(os.Stderr, "用法: bilibilipro <login|daily|unfollow|test> [-config path] [-cookies path] [-accounts 1,2] [-debug] [-cron expr] [-random-sleep]")
 	fmt.Fprintln(os.Stderr, "  login    扫码登录并保存新 cookie")
 	fmt.Fprintln(os.Stderr, "  daily    每日任务（看视频/分享/投币等）")
 	fmt.Fprintln(os.Stderr, "  unfollow 取关指定分组用户")

@@ -1,4 +1,4 @@
-# bilitoolgo
+# bilibilipro
 
 B 站自动化任务 CLI —— BiliBiliToolPro 的 Go 重写版。
 
@@ -23,22 +23,22 @@ B 站自动化任务 CLI —— BiliBiliToolPro 的 Go 重写版。
 
 ```bash
 # 1. 构建
-go build -o bilipro ./main.go
+go build -o bilibilipro ./main.go
 
 # 2. 准备配置（首次）
 cp config.example.yaml config.yaml
 
 # 3. 连通性测试
-./bilipro test
+./bilibilipro test
 
 # 4. 扫码登录获取 Cookie（会写入 cookies.json）
-./bilipro login
+./bilibilipro login
 
 # 5. 执行每日任务
-./bilipro daily
+./bilibilipro daily
 
 # 6. 执行取关任务
-./bilipro unfollow
+./bilibilipro unfollow
 ```
 
 > 二进制也可通过 `-config path` / `-cookies path` 指定配置文件路径；
@@ -73,7 +73,7 @@ cp config.example.yaml config.yaml
 
 ```bash
 # 每天 08:30:00 执行每日任务
-./bilipro daily -cron "0 30 8 * * *"
+./bilibilipro daily -cron "0 30 8 * * *"
 ```
 
 也可以写在 `config.yaml` 中，效果与 `-cron` 相同（flag 优先于配置）：
@@ -88,7 +88,7 @@ scheduler:
 
 任务触发后先随机沉默一段时间再执行，避免定时任务集中触发被风控。沉默时长由**程序随机**，最晚不超过当日 23:00:00 开始执行（为任务留足运行时间，不会跨天）：
 
-- 命令行：`./bilipro daily -random-sleep`
+- 命令行：`./bilibilipro daily -random-sleep`
 - 配置文件：`security.random_sleep_enabled: true`
 - `false` 或未配置表示禁用（不沉默）；不指定 flag 时默认取配置值
 - 一次性模式（不带 `-cron`）同样生效：启动后先随机沉默再执行任务
@@ -148,7 +148,7 @@ scheduler:
 
 ```bash
 # 1. 构建镜像
-cd bilipro
+cd bilibilipro
 mkdir -p config logs
 cp config.example.yaml config/config.yaml
 # 按需修改 config/config.yaml（scheduler.enabled: true + scheduler.cron 时间、任务开关、钉钉推送、随机沉默开关）
@@ -178,22 +178,22 @@ docker compose logs -f
 docker run --rm \
   -v "$(pwd)/config:/app/config" \
   -v "$(pwd)/logs:/app/logs" \
-  ghcr.io/raywangqvq/bilitoolgo:latest daily
+  ghcr.io/raywangqvq/bilibilipro:latest daily
 
 # 扫码登录（生成 cookies.json 持久化到 ./config）
 docker run --rm -it \
   -v "$(pwd)/config:/app/config" \
-  ghcr.io/raywangqvq/bilitoolgo:latest login
+  ghcr.io/raywangqvq/bilibilipro:latest login
 ```
 
 ### cron 定时执行（Linux 宿主机）
 
 ```cron
 # 每天 09:30 执行一次每日任务
-30 9 * * * docker run --rm -v /opt/bilitool/config:/app/config -v /opt/bilitool/logs:/app/logs ghcr.io/raywangqvq/bilitoolgo:latest daily >> /opt/bilitool/logs/cron.log 2>&1
+30 9 * * * docker run --rm -v /opt/bilitool/config:/app/config -v /opt/bilitool/logs:/app/logs ghcr.io/raywangqvq/bilibilipro:latest daily >> /opt/bilitool/logs/cron.log 2>&1
 ```
 
-镜像默认推送到 `ghcr.io/raywangqvq/bilitoolgo`，国内网络可替换为 `docker.io/zai7lou/bilitoolgo`。
+镜像默认推送到 `ghcr.io/raywangqvq/bilibilipro`，国内网络可替换为 `docker.io/zai7lou/bilibilipro`。
 
 ### 基础镜像选择
 
@@ -210,11 +210,11 @@ Dockerfile 支持切换基础镜像（默认 alpine:3.21，已升版替换 EOL �
 
 ``bash
 # 默认 alpine
-docker build -t bilipro .
+docker build -t bilibilipro .
 # distroless 变体（独立 Dockerfile）
-docker build -f Dockerfile.distroless -t bilipro:distroless .
+docker build -f Dockerfile.distroless -t bilibilipro:distroless .
 # 单 Dockerfile 切换基镜像
-docker build --build-arg BASE_IMAGE=gcr.io/distroless/static-debian12:nonroot --build-arg APP_UID=65532 -t bilipro .
+docker build --build-arg BASE_IMAGE=gcr.io/distroless/static-debian12:nonroot --build-arg APP_UID=65532 -t bilibilipro .
 ``
 
 
@@ -241,7 +241,7 @@ docker build --build-arg BASE_IMAGE=gcr.io/distroless/static-debian12:nonroot --
 ## 目录结构
 
 ```
-bilipro/
+bilibilipro/
 ├── main.go                  # 入口：参数解析、配置加载、任务分发
 ├── go.mod / go.sum
 ├── config.example.yaml      # 配置示例

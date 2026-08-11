@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/raywangqvq/bilitoolgo/internal/model"
+	"github.com/jackieliao001/bilibilipro/internal/model"
 )
 
 func TestDingTalkDisabledSendNil(t *testing.T) {
